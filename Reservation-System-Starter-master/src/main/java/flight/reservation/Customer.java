@@ -41,14 +41,8 @@ public class Customer {
         boolean valid = true;
         valid = valid && !FlightOrder.getNoFlyList().contains(this.getName());
         valid = valid && passengerNames.stream().noneMatch(passenger -> FlightOrder.getNoFlyList().contains(passenger));
-        valid = valid && flights.stream().allMatch(scheduledFlight -> {
-            try {
-                return scheduledFlight.getAvailableCapacity() >= passengerNames.size();
-            } catch (NoSuchFieldException e) {
-                e.printStackTrace();
-                return false;
-            }
-        });
+        valid = valid && flights.stream().allMatch(scheduledFlight ->
+                scheduledFlight.getAvailableCapacity() >= passengerNames.size());
         return valid;
     }
 
