@@ -1,6 +1,7 @@
 package flight.reservation.flight;
 
 import flight.reservation.Airport;
+import flight.reservation.FlightBookingObserver;
 import flight.reservation.Passenger;
 import flight.reservation.plane.Helicopter;
 import flight.reservation.plane.PassengerDrone;
@@ -15,6 +16,7 @@ public class ScheduledFlight extends Flight {
     private final List<Passenger> passengers;
     private final Date departureTime;
     private double currentPrice = 100;
+    private final List<FlightBookingObserver> observers = new ArrayList<>();
 
     public ScheduledFlight(int number, Airport departure, Airport arrival, Object aircraft, Date departureTime) {
         super(number, departure, arrival, aircraft);
@@ -27,6 +29,20 @@ public class ScheduledFlight extends Flight {
         this.departureTime = departureTime;
         this.passengers = new ArrayList<>();
         this.currentPrice = currentPrice;
+    }
+
+    /**
+     * Observer Pattern: registers an observer to receive booking notifications.
+     */
+    public void addObserver(FlightBookingObserver observer) {
+        observers.add(observer);
+    }
+
+    /**
+     * Observer Pattern: removes a previously registered observer.
+     */
+    public void removeObserver(FlightBookingObserver observer) {
+        observers.remove(observer);
     }
 
     public int getCrewMemberCapacity() throws NoSuchFieldException {
@@ -44,6 +60,9 @@ public class ScheduledFlight extends Flight {
 
     public void addPassengers(List<Passenger> passengers) {
         this.passengers.addAll(passengers);
+        for (FlightBookingObserver observer : observers) {
+            observer.onPassengersAdded(this, passengers);
+        }
     }
 
     public void removePassengers(List<Passenger> passengers) {
