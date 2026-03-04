@@ -4,6 +4,7 @@ import flight.reservation.Customer;
 import flight.reservation.flight.ScheduledFlight;
 import flight.reservation.payment.CreditCard;
 import flight.reservation.payment.Paypal;
+import flight.reservation.payment.PaymentStrategy;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -103,5 +104,20 @@ public class FlightOrder extends Order {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Strategy Pattern: processes the order using the provided payment strategy.
+     * This decouples the order from specific payment implementations.
+     */
+    public boolean processOrder(PaymentStrategy paymentStrategy) throws IllegalStateException {
+        if (isClosed()) {
+            return true;
+        }
+        boolean isPaid = paymentStrategy.pay(this.getPrice());
+        if (isPaid) {
+            this.setClosed();
+        }
+        return isPaid;
     }
 }

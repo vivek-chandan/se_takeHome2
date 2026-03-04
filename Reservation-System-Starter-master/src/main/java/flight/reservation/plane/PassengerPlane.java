@@ -6,6 +6,14 @@ public class PassengerPlane {
     public int passengerCapacity;
     public int crewCapacity;
 
+    /**
+     * Factory method: creates and returns a PassengerPlane configured for the given model.
+     * Preferred over calling the constructor directly.
+     */
+    public static PassengerPlane create(String model) {
+        return new PassengerPlane(model);
+    }
+
     public PassengerPlane(String model) {
         this.model = model;
         switch (model) {
